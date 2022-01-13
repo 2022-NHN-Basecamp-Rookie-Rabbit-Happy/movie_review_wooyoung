@@ -2,15 +2,20 @@ package com.example.movie_review_wooyoung.repository;
 
 import com.example.movie_review_wooyoung.entity.Member;
 import java.util.stream.IntStream;
+import javax.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 
 @SpringBootTest
 public class MemberRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     @Test
     public void insertMembers() {
@@ -23,5 +28,19 @@ public class MemberRepositoryTest {
 
             memberRepository.save(member);
         });
+    }
+
+    @Commit
+    @Transactional
+    @Test
+    public void testDeleteMember() {
+
+        Long mid = 1L;
+
+        Member member = Member.builder().mid(mid).build();
+
+        reviewRepository.deleteByMember(member);
+        memberRepository.deleteById(mid);
+
     }
 }

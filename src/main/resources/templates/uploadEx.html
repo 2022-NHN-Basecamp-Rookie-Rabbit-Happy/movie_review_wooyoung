@@ -25,6 +25,23 @@
 </script>
 
 <script>
+
+  $('.uploadResult').on("click", ".removeBtn", e => {
+
+    const target = $(this);
+    const fileName = e.target.dataset.name;
+    const targetDiv = e.delegateTarget;
+
+    console.log({target, fileName, targetDiv, e});
+
+    $.post('/removeFile', {fileName}, result => {
+      console.log(result);
+      if (result) {
+        targetDiv.remove();
+      }
+    })
+  });
+
   $('.uploadBtn').click(() => {
 
     const formData = new FormData();
@@ -38,9 +55,14 @@
 
       const divArea = $(".uploadResult");
 
+      let str = "";
       for (let i = 0; i < arr.length; i++) {
-        divArea.append("<img src='/display?fileName=" + arr[i].thumbnailURL + "'>");
+        str += "<div>";
+        str += "<img src='/display?fileName=" + arr[i].thumbnailURL + "'>"
+        str += "<button class='removeBtn' data-name='" + arr[i].imageURL + "'>REMOVE</button>"
+        str += "</div>"
       }
+      divArea.append(str);
     }
 
     for (let i = 0; i < files.length; i++) {

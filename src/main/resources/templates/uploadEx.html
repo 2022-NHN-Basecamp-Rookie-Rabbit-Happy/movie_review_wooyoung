@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<input name="uploadFiles" type="file" multiple>
+<button class="uploadBtn">Upload</button>
+
+<div class="uploadResult">
+
+</div>
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous">
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous">
+</script>
+
+<script>
+
+  $('.uploadResult').on("click", ".removeBtn", e => {
+
+    const target = $(this);
+    const fileName = e.target.dataset.name;
+    const targetDiv = e.delegateTarget;
+
+    console.log({target, fileName, targetDiv, e});
+
+    $.post('/removeFile', {fileName}, result => {
+      console.log(result);
+      if (result) {
+        targetDiv.remove();
+      }
+    })
+  });
+
+  $('.uploadBtn').click(() => {
+
+    const formData = new FormData();
+
+    const inputFile = $("input[type='file']");
+
+    const files = inputFile[0].files;
+
+    const showUploadedImages = arr => {
+      console.log({arr});
+
+      const divArea = $(".uploadResult");
+
+      let str = "";
+      for (let i = 0; i < arr.length; i++) {
+        str += "<div>";
+        str += "<img src='/display?fileName=" + arr[i].thumbnailURL + "'>"
+        str += "<button class='removeBtn' data-name='" + arr[i].imageURL + "'>REMOVE</button>"
+        str += "</div>"
+      }
+      divArea.append(str);
+    }
+
+    for (let i = 0; i < files.length; i++) {
+      console.log(files[i]);
+      formData.append("uploadFiles", files[i]);
+    }
+
+    $.ajax({
+      url: '/uploadAjax',
+      processData: false,
+      contentType: false,
+      data: formData,
+      type: 'POST',
+      dataType: 'json',
+      success: result => showUploadedImages(result),
+      error: (jqXHR, textStatus, errorThrown) => console.log(textStatus)
+    })
+
+  })
+</script>
+</body>
+</html>

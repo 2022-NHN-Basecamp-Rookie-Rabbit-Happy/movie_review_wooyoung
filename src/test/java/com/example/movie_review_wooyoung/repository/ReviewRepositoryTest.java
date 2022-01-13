@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.example.movie_review_wooyoung.entity.Member;
 import com.example.movie_review_wooyoung.entity.Movie;
 import com.example.movie_review_wooyoung.entity.Review;
+import java.util.List;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,27 @@ public class ReviewRepositoryTest {
                 .build();
 
             reviewRepository.save(movieReview);
+
         });
     }
 
+    @Test
+    public void testGetMovieReviews() {
+
+        Movie movie = Movie.builder()
+            .mno(92L)
+            .build();
+
+        List<Review> result = reviewRepository.findByMovie(movie);
+
+        result.forEach(movieReview -> {
+
+            System.out.println(movieReview.getReviewNum());
+            System.out.println("\t" + movieReview.getGrade());
+            System.out.println("\t" + movieReview.getText());
+            System.out.println("\t" + movieReview.getMember().getEmail());
+            System.out.println("-----------------");
+
+        });
+    }
 }

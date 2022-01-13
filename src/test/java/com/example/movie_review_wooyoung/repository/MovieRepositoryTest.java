@@ -68,4 +68,17 @@ public class MovieRepositoryTest {
             System.out.println(Arrays.toString(objects));
         }
     }
+
+    @Test
+    public void testGetMovieWithAll() {
+
+        List<Object[]> result = movieRepository.getMovieWithAll(94L);
+
+        System.out.println(result);
+
+        for (Object[] arr : result) {
+            System.out.println(Arrays.toString(arr));
+        }
+
+    }
 }

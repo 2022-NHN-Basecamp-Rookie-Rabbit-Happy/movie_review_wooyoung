@@ -2,6 +2,8 @@ package com.example.movie_review_wooyoung.service;
 
 import com.example.movie_review_wooyoung.dto.MovieDTO;
 import com.example.movie_review_wooyoung.dto.MovieImageDTO;
+import com.example.movie_review_wooyoung.dto.PageRequestDTO;
+import com.example.movie_review_wooyoung.dto.PageResultDTO;
 import com.example.movie_review_wooyoung.entity.Movie;
 import com.example.movie_review_wooyoung.entity.MovieImage;
 import java.util.HashMap;
@@ -12,6 +14,31 @@ import java.util.stream.Collectors;
 public interface MovieService {
 
     Long register(MovieDTO movieDTO);
+
+    PageResultDTO<MovieDTO, Object[]> getList(PageRequestDTO pageRequestDTO);
+
+    default MovieDTO entitiesToDTO(Movie movie, List<MovieImage> movieImageList, Double avg,
+        Long reviewCnt) {
+        MovieDTO movieDTO = MovieDTO.builder()
+            .mno(movie.getMno())
+            .title(movie.getTitle())
+            .regDate(movie.getRegDate())
+            .modDate(movie.getModDate())
+            .build();
+
+        List<MovieImageDTO> movieImageDTOList = movieImageList.stream().map(movieImage -> {
+            return MovieImageDTO.builder().imgName(movieImage.getImgName())
+                .path(movieImage.getPath())
+                .uuid(movieImage.getUuid())
+                .build();
+        }).collect(Collectors.toList());
+
+        movieDTO.setImageDTOList(movieImageDTOList);
+        movieDTO.setAvg(avg);
+        movieDTO.setReviewCnt(reviewCnt.intValue());
+
+        return movieDTO;
+    }
 
     default Map<String, Object> dtoToEntity(MovieDTO movieDTO) {
         Map<String, Object> entityMap = new HashMap<>();

@@ -28,7 +28,8 @@
 
     <div class="uploadResult">
       <ul>
-        <li th:each="movieImage: ${dto.imageDTOList}">
+        <li th:each="movieImage: ${dto.imageDTOList}"
+            th:data-file="${movieImage.getThumbnailURL()}">
           <img th:src="|/display?fileName=${movieImage.getThumbnailURL()}|"
                th:if="${movieImage.path != null}">
         </li>
@@ -248,6 +249,17 @@
       })
 
       reviewModal.modal('hide');
+    })
+
+    $('.uploadResult li').click(function () {
+      const file = $(this).data('file');
+
+      console.log(file);
+
+      $('.imageModal .modal-body').html(
+          "<img style='width: 100%' src='/display?fileName=" + file + "&size=1'>");
+
+      $(".imageModal").modal('show');
     })
   });
 </script>

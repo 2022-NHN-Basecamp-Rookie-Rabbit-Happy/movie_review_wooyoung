@@ -7,6 +7,7 @@ import com.example.movie_review_wooyoung.entity.Movie;
 import com.example.movie_review_wooyoung.entity.MovieImage;
 import com.example.movie_review_wooyoung.repository.MovieImageRepository;
 import com.example.movie_review_wooyoung.repository.MovieRepository;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -60,5 +61,27 @@ public class MovieServiceImpl implements MovieService {
         );
 
         return new PageResultDTO<>(result, fn);
+    }
+
+    @Override
+    public MovieDTO getMovie(Long mno) {
+
+        List<Object[]> result = movieRepository.getMovieWithAll(mno);
+
+        Movie movie = (Movie) result.get(0)[0];
+
+        List<MovieImage> movieImageList = new ArrayList<>();
+
+        result.forEach(arr -> {
+            MovieImage movieImage = (MovieImage) arr[1];
+            movieImageList.add(movieImage);
+        });
+
+        System.out.println(Arrays.toString(result.get(0)));
+
+        Double avg = (Double) result.get(0)[2];
+        Long reviewCnt = (Long) result.get(0)[3];
+
+        return entitiesToDTO(movie, movieImageList, avg, reviewCnt);
     }
 }
